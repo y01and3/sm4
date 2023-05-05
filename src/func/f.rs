@@ -1,4 +1,4 @@
-fn s_change(input: usize) -> u32 {
+fn s_change(input: u8) -> u8 {
     let sbox = [
         0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7, 0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c,
         0x05, 0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3, 0xaa, 0x44, 0x13, 0x26, 0x49, 0x86,
@@ -20,7 +20,7 @@ fn s_change(input: usize) -> u32 {
         0x48,
     ];
 
-    sbox[input]
+    sbox[input as usize]
 }
 
 fn l_change(input: u32) -> u32 {
@@ -39,10 +39,10 @@ fn cut_from_128bit(input: u128) -> [u32; 4] {
     temp
 }
 
-fn cut_from_32bit(input: u32) -> [usize; 4] {
-    let mut temp: [usize; 4] = [0; 4];
+fn cut_from_32bit(input: u32) -> [u8; 4] {
+    let mut temp: [u8; 4] = [0; 4];
     for i in 0..4 {
-        temp[i] = (input >> (8 * (3 - i))) as usize & 0xff;
+        temp[i] = (input >> (8 * (3 - i))) as u8;
     }
     temp
 }
@@ -55,7 +55,7 @@ fn merge_to_128bit(input: [u32; 4]) -> u128 {
     temp
 }
 
-fn merge_to_32bit(input: [i32; 4]) -> u32 {
+fn merge_to_32bit(input: [u8; 4]) -> u32 {
     let mut temp: u32 = 0;
     for i in 0..4 {
         temp += (input[i] as u32) << (8 * (3 - i));
@@ -64,9 +64,9 @@ fn merge_to_32bit(input: [i32; 4]) -> u32 {
 }
 
 fn t_exchange(input: u32) -> u32 {
-    let mut temp: [usize; 4] = cut_from_32bit(input);
+    let mut temp: [u8; 4] = cut_from_32bit(input);
     for i in 0..4 {
-        temp[i] = s_change(temp[i]) as usize;
+        temp[i] = s_change(temp[i]);
     }
     let temp = merge_to_32bit(temp);
     l_change(temp)

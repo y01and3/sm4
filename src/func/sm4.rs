@@ -1,4 +1,4 @@
-use crate::func::{
+use super::{
     basis_func::{cut_from_128bit, merge_to_128bit},
     f::round,
     key::key_generator,

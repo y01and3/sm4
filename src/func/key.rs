@@ -1,4 +1,4 @@
-use crate::func::basis_func::{rot_l_32bit, tau_change, add_into_list};
+use super::basis_func::{add_into_list, rot_l_32bit, tau_change};
 
 fn l_transform(input: u32) -> u32 {
     input ^ rot_l_32bit(input, 13) ^ rot_l_32bit(input, 23)

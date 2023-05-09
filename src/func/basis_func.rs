@@ -63,10 +63,6 @@ pub fn merge_to_128bit(input: [u32; 4]) -> u128 {
     temp
 }
 
-pub fn list_invert(input: [u32; 4]) -> [u32; 4] {
-    [input[3], input[2], input[1], input[0]]
-}
-
 pub fn rot_l_32bit(input: u32, n: u32) -> u32 {
     (input << n) | (input >> (32 - n))
 }

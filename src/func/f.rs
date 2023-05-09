@@ -11,6 +11,5 @@ fn t_exchange(input: u32) -> u32 {
 pub fn round(x: [u32; 4], round_key: u32) -> [u32; 4] {
 
     let x_4: u32 = x[0] ^ t_exchange(x[1] ^ x[2] ^ x[3] ^ round_key);
-    println!("{:x} ", x_4);
     add_into_list(x, x_4)
 }

@@ -1,3 +1,3 @@
-pub mod f;
-pub mod key;
-pub mod basis_func;
+mod f;
+mod key;
+mod basis_func;

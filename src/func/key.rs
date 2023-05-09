@@ -20,7 +20,7 @@ fn generate_new_key(key: [u32; 4], ck: u32) -> [u32; 4] {
     add_into_list(key, k)
 }
 
-fn key_generator(sk: [u32; 4]) -> [u32; 32] {
+pub fn key_generator(sk: [u32; 4]) -> [u32; 32] {
     let fk = [0xA3B1BAC6, 0x56AA3350, 0x677D9197, 0xB27022DC];
     let ck = [
         0x00070E15, 0x1C232A31, 0x383F464D, 0x545B6269, 0x70777E85, 0x8C939AA1, 0xA8AFB6BD,

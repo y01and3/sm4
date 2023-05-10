@@ -20,10 +20,7 @@ fn main() {
     io::stdin()
         .read_line(&mut input)
         .expect("Failed to read line");
-    let message = input.trim();
-    print!("The message is: ");
-    print!("{}", message);
-    let message = match u128::from_str_radix(message, 16) {
+    let message = match u128::from_str_radix(input.trim(), 16) {
         Ok(message) => message,
         Err(_) => panic!("Invalid message!"),
     };

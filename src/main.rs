@@ -38,10 +38,10 @@ fn main() {
     if mode_flag {
         let cipher = func::sm4::enc(message, key);
         println!("The cipher is:");
-        println!("{:32x}", cipher);
+        println!("0x{:032x}", cipher);
     } else {
         let plain = func::sm4::dec(message, key);
         println!("The plain is:");
-        println!("{:32x}", plain);
+        println!("0x{:032x}", plain);
     }
 }

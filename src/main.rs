@@ -1,47 +1,46 @@
-pub mod func;
-use std::io::{self};
+mod func;
+use clap::{Parser, Subcommand};
+
+#[derive(Parser)]
+#[command(author, version, about, long_about = None)]
+pub struct Cli {
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand)]
+enum Commands {
+    #[command(arg_required_else_help = true)]
+    Encode { hex: String, key: String },
+    #[command(arg_required_else_help = true)]
+    Decode { hex: String, key: String },
+}
 fn main() {
-    let mut input = String::new();
-    println!("Please input the mode [encode, decode]:");
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    let mode = input.trim();
-    let mode = mode.to_lowercase();
-    let mode = mode.as_str();
-    let mode_flag = match mode {
-        "encode" => true,
-        "decode" => false,
-        _ => panic!("Invalid mode!"),
-    };
-
-    let mut input = String::new();
-    println!("Please input the message (32 hex digits):");
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    let message = match u128::from_str_radix(input.trim(), 16) {
-        Ok(message) => message,
-        Err(_) => panic!("Invalid message!"),
-    };
-
-    let mut input = String::new();
-    println!("Please input the key (32 hex digits):");
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Failed to read line");
-    let key = match u128::from_str_radix(input.trim(), 16) {
-        Ok(key) => key,
-        Err(_) => panic!("Invalid key!"),
-    };
-
-    if mode_flag {
-        let cipher = func::sm4::enc(message, key);
-        println!("The cipher is:");
-        println!("0x{:032x}", cipher);
-    } else {
-        let plain = func::sm4::dec(message, key);
-        println!("The plain is:");
-        println!("0x{:032x}", plain);
+    let cli = Cli::parse();
+    match cli.command {
+        Commands::Encode { hex, key } => {
+            let plain_hex = match u128::from_str_radix(hex.trim(), 16) {
+                Ok(plain_hex) => plain_hex,
+                Err(_) => panic!("Invalid text!"),
+            };
+            let key = match u128::from_str_radix(key.trim(), 16) {
+                Ok(key) => key,
+                Err(_) => panic!("Invalid key!"),
+            };
+            let cipher = func::sm4::enc(plain_hex, key);
+            println!("0x{:032x}", cipher);
+        }
+        Commands::Decode { hex, key } => {
+            let cipher_hex = match u128::from_str_radix(hex.trim(), 16) {
+                Ok(cipher_hex) => cipher_hex,
+                Err(_) => panic!("Invalid text!"),
+            };
+            let key = match u128::from_str_radix(key.trim(), 16) {
+                Ok(key) => key,
+                Err(_) => panic!("Invalid key!"),
+            };
+            let plain = func::sm4::dec(cipher_hex, key);
+            println!("0x{:032x}", plain);
+        }
     }
 }

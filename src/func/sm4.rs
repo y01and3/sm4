@@ -58,3 +58,20 @@ fn merge_to_128bit(input: [u32; 4]) -> u128 {
     }
     temp
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn sm4_encode() {
+        let mut sm4 = Sm4::new(0x0123456789abcdeffedcba9876543210, 0x0123456789abcdeffedcba9876543210);
+        assert_eq!(sm4.encode(), 0x681edf34d206965e86b3e94f536e4246);
+    }
+
+    #[test]
+    fn sm4_decode(){
+        let mut sm4 = Sm4::new(0x0123456789abcdeffedcba9876543210, 0x681edf34d206965e86b3e94f536e4246);
+        assert_eq!(sm4.decode(), 0x0123456789abcdeffedcba9876543210);
+    }
+}

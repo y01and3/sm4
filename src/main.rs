@@ -27,8 +27,8 @@ fn main() {
                 Ok(key) => key,
                 Err(_) => panic!("Invalid key!"),
             };
-            let cipher = func::sm4::enc(plain_hex, key);
-            println!("0x{:032x}", cipher);
+            let mut sm4 = func::sm4::Sm4::new(plain_hex, key);
+            println!("0x{:032x}", sm4.encode());
         }
         Commands::Decode { hex, key } => {
             let cipher_hex = match u128::from_str_radix(hex.trim(), 16) {
@@ -39,8 +39,8 @@ fn main() {
                 Ok(key) => key,
                 Err(_) => panic!("Invalid key!"),
             };
-            let plain = func::sm4::dec(cipher_hex, key);
-            println!("0x{:032x}", plain);
+            let mut sm4 = func::sm4::Sm4::new(cipher_hex, key);
+            println!("0x{:032x}", sm4.decode());
         }
     }
 }

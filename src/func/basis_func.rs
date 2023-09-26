@@ -1,5 +1,19 @@
-fn s_box(input: u8) -> u8 {
-    let sm4_sbox = [
+pub trait Exchange {
+    fn l_transform(&self, input: u32) -> u32;
+
+    fn t_exchange(&self, input: u32) -> u32 {
+        self.l_transform(tau_change(input))
+    }
+
+    fn generate(&self, x: [u32; 4], i: u32) -> [u32; 4] {
+        let k = x[0] ^ self.t_exchange(x[1] ^ x[2] ^ x[3] ^ i);
+        add_into_list(x, k)
+    }
+}
+
+fn tau_change(input: u32) -> u32 {
+    let mut temp: [u8; 4] = cut_from_32bit(input);
+    let sbox = [
         0xD6, 0x90, 0xE9, 0xFE, 0xCC, 0xE1, 0x3D, 0xB7, 0x16, 0xB6, 0x14, 0xC2, 0x28, 0xFB, 0x2C,
         0x05, 0x2B, 0x67, 0x9A, 0x76, 0x2A, 0xBE, 0x04, 0xC3, 0xAA, 0x44, 0x13, 0x26, 0x49, 0x86,
         0x06, 0x99, 0x9C, 0x42, 0x50, 0xF4, 0x91, 0xEF, 0x98, 0x7A, 0x33, 0x54, 0x0B, 0x43, 0xED,
@@ -19,8 +33,10 @@ fn s_box(input: u8) -> u8 {
         0x18, 0xF0, 0x7D, 0xEC, 0x3A, 0xDC, 0x4D, 0x20, 0x79, 0xEE, 0x5F, 0x3E, 0xD7, 0xCB, 0x39,
         0x48,
     ];
-
-    sm4_sbox[input as usize]
+    for i in 0..4 {
+        temp[i] = sbox[temp[i] as usize];
+    }
+    merge_to_32bit(temp)
 }
 
 fn cut_from_32bit(input: u32) -> [u8; 4] {
@@ -39,34 +55,10 @@ fn merge_to_32bit(input: [u8; 4]) -> u32 {
     temp
 }
 
-pub fn tau_change(input: u32) -> u32 {
-    let mut temp: [u8; 4] = cut_from_32bit(input);
-    for i in 0..4 {
-        temp[i] = s_box(temp[i]);
-    }
-    merge_to_32bit(temp)
-}
-
-pub fn cut_from_128bit(input: u128) -> [u32; 4] {
-    let mut temp: [u32; 4] = [0; 4];
-    for i in 0..4 {
-        temp[i] = (input >> (32 * (3 - i))) as u32;
-    }
-    temp
-}
-
-pub fn merge_to_128bit(input: [u32; 4]) -> u128 {
-    let mut temp: u128 = 0;
-    for i in 0..4 {
-        temp += (input[i] as u128) << (32 * (3 - i));
-    }
-    temp
-}
-
 pub fn rot_l_32bit(input: u32, n: u32) -> u32 {
     (input << n) | (input >> (32 - n))
 }
 
-pub fn add_into_list(input: [u32; 4], x_4: u32) -> [u32; 4] {
+fn add_into_list(input: [u32; 4], x_4: u32) -> [u32; 4] {
     [input[1], input[2], input[3], x_4]
 }

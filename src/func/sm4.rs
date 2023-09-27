@@ -1,14 +1,14 @@
-use super::key::KeyGenerator;
+use super::key::Sm4KeyGenerator;
 use crate::func::basis_func::{rot_l_32bit, Exchange};
 
 pub struct Sm4 {
-    key: KeyGenerator,
+    key: Sm4KeyGenerator,
     x: [u32; 4],
 }
 
 impl Sm4 {
     pub fn new(key: u128, hex: u128) -> Self {
-        let key = KeyGenerator::new(cut_from_128bit(key));
+        let key = Sm4KeyGenerator::new(cut_from_128bit(key));
         let x = cut_from_128bit(hex);
         Self { key, x }
     }
@@ -62,7 +62,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sm4_encode() {
+    fn test_sm4_encode() {
         let mut sm4 = Sm4::new(
             0x0123456789abcdeffedcba9876543210,
             0x0123456789abcdeffedcba9876543210,
@@ -71,7 +71,7 @@ mod tests {
     }
 
     #[test]
-    fn sm4_decode() {
+    fn test_sm4_decode() {
         let mut sm4 = Sm4::new(
             0x0123456789abcdeffedcba9876543210,
             0x681edf34d206965e86b3e94f536e4246,

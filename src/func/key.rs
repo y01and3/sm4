@@ -1,11 +1,11 @@
 use super::basis_func::{rot_l_32bit, Exchange};
 
-pub struct KeyGenerator {
+pub struct Sm4KeyGenerator {
     sk: [u32; 4],
     key: Option<[u32; 32]>,
 }
 
-impl KeyGenerator {
+impl Sm4KeyGenerator {
     pub fn new(sk: [u32; 4]) -> Self {
         Self { sk, key: None }
     }
@@ -46,8 +46,7 @@ impl KeyGenerator {
         }
     }
 
-    #[warn(dead_code)]
-    pub fn get_next_key(&mut self) -> [u32; 32] {
+    pub fn _get_next_key(&mut self) -> [u32; 32] {
         match self.key {
             Some(_) => {
                 self.key_generator();
@@ -63,7 +62,7 @@ impl KeyGenerator {
     }
 }
 
-impl Exchange for KeyGenerator {
+impl Exchange for Sm4KeyGenerator {
     fn l_transform(&self, input: u32) -> u32 {
         input ^ rot_l_32bit(input, 13) ^ rot_l_32bit(input, 23)
     }
